@@ -18,16 +18,27 @@
 # All output is formatted for readability using the functions of
 # `output.bash' and sent to the standard error.
 
-# shellcheck disable=1090
+# shellcheck source=./src/assert.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/assert.bash"
+# shellcheck source=./src/refute.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/refute.bash"
+# shellcheck source=./src/assert_equal.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/assert_equal.bash"
+# shellcheck source=./src/assert_not_equal.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/assert_not_equal.bash"
+# shellcheck source=./src/assert_success.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/assert_success.bash"
+# shellcheck source=./src/assert_failure.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/assert_failure.bash"
+# shellcheck source=./src/assert_output.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/assert_output.bash"
+# shellcheck source=./src/refute_output.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/refute_output.bash"
+# shellcheck source=./src/assert_line.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/assert_line.bash"
+# shellcheck source=./src/refute_line.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/refute_line.bash"
+# shellcheck source=./src/assert_regex.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/assert_regex.bash"
+# shellcheck source=./src/refute_regex.bash
 source "$(dirname "${BASH_SOURCE[0]}")/src/refute_regex.bash"
