@@ -254,12 +254,22 @@ ERR_MSG
 @test 'assert_output() --regexp <regexp>: returns 1 and displays an error message if <regexp> is not a valid extended regular expression' {
   run assert_output --regexp '[.*'
 
-  assert_test_fail <<'ERR_MSG'
+  if (( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >=3) )); then
+    [[ "$output" =~ "invalid regular expression "([^$'\n']+) ]]
+    assert_test_fail <<ERR_MSG
+
+-- ERROR: assert_output --
+invalid regular expression ${BASH_REMATCH[1]}
+--
+ERR_MSG
+  else
+    assert_test_fail <<'ERR_MSG'
 
 -- ERROR: assert_output --
 Invalid extended regular expression: `[.*'
 --
 ERR_MSG
+  fi
 }
 
 
@@ -282,4 +292,15 @@ ERR_MSG
   run echo '-p'
   run assert_output -- '-p'
   assert_test_pass
+}
+
+@test "__assert_stream(): call to __assert_stream shows error" {
+  run __assert_stream
+  assert_test_fail <<'ERR_MSG'
+
+-- ERROR: __assert_stream --
+Unexpected call to `__assert_stream`
+Did you mean to call `assert_output` or `assert_stderr`?
+--
+ERR_MSG
 }

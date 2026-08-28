@@ -336,16 +336,43 @@ ERR_MSG
 @test 'assert_line() --regexp <regexp>: returns 1 and displays an error message if <regexp> is not a valid extended regular expression' {
   run assert_line --regexp '[.*'
 
-  assert_test_fail <<'ERR_MSG'
+  if (( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >=3) )); then
+    [[ "$output" =~ "invalid regular expression "([^$'\n']+) ]]
+    cat <<ERR_MSG
+
+-- ERROR: assert_line --
+invalid regular expression ${BASH_REMATCH[1]}
+--
+ERR_MSG
+    assert_test_fail <<ERR_MSG
+
+-- ERROR: assert_line --
+invalid regular expression ${BASH_REMATCH[1]}
+--
+ERR_MSG
+  else
+    assert_test_fail <<'ERR_MSG'
 
 -- ERROR: assert_line --
 Invalid extended regular expression: `[.*'
 --
 ERR_MSG
+  fi
 }
 
 @test "assert_line(): \`--' stops parsing options" {
   run printf 'a\n-p\nc'
   run assert_line -- '-p'
   assert_test_pass
+}
+
+@test "__assert_line(): call to __assert_line shows error" {
+  run __assert_line
+  assert_test_fail <<'ERR_MSG'
+
+-- ERROR: __assert_line --
+Unexpected call to `__assert_line`
+Did you mean to call `assert_line` or `assert_stderr_line`?
+--
+ERR_MSG
 }

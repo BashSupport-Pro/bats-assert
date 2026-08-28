@@ -329,16 +329,37 @@ ERR_MSG
 @test 'refute_line() --regexp <regexp>: returns 1 and displays an error message if <regexp> is not a valid extended regular expression' {
   run refute_line --regexp '[.*'
 
-  assert_test_fail <<'ERR_MSG'
+  if (( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >=3) )); then
+    [[ "$output" =~ "invalid regular expression "([^$'\n']+) ]]
+    assert_test_fail <<ERR_MSG
+
+-- ERROR: refute_line --
+invalid regular expression ${BASH_REMATCH[1]}
+--
+ERR_MSG
+  else
+    assert_test_fail <<'ERR_MSG'
 
 -- ERROR: refute_line --
 Invalid extended regular expression: `[.*'
 --
 ERR_MSG
+  fi
 }
 
 @test "refute_line(): \`--' stops parsing options" {
   run printf 'a\n--\nc'
   run refute_line -- '-p'
   assert_test_pass
+}
+
+@test "__refute_stream_line(): call to __refute_stream_line shows error" {
+  run __refute_stream_line
+  assert_test_fail <<'ERR_MSG'
+
+-- ERROR: __refute_stream_line --
+Unexpected call to `__refute_stream_line`
+Did you mean to call `refute_line` or `refute_stderr_line`?
+--
+ERR_MSG
 }
